@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
   pull_request:
     branches:
       - master
@@ -92,6 +97,12 @@ jobs:
       with:
         name: WinUAE x64
         path: D:\Amiga
+
+    - name: Attach x64 binary to Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: D:\Amiga\winuae64.exe
 
   Build-WinUAE-ARM64-binary:
     runs-on: windows-latest
