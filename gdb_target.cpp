@@ -242,9 +242,41 @@ bool GdbTarget::check_stop(uaecptr pc, char*, size_t)
 	return range_active && (pc < range_start || pc >= range_end);
 }
 
+std::string GdbTarget::offsets()
+{
+	const uaecptr execbase = get_long_debug(4);
+	const uaecptr task = execbase ? get_long_debug(execbase + 276) : 0;
+	if (!task || get_byte_debug(task + 8) != 13)
+		return {};
+	const uaecptr cli = get_long_debug(task + 172) << 2;
+	const int tasknum = static_cast<int>(get_long_debug(task + 140));
+	uaecptr seg = 0;
+	if (cli && tasknum) {
+		seg = get_long_debug(cli + 60) << 2;
+	} else {
+		const uaecptr seglist = get_long_debug(task + 128) << 2;
+		if (seglist)
+			seg = get_long_debug(seglist + 12) << 2;
+	}
+	if (!seg)
+		return {};
+	uint32_t bases[3] = { 0, 0, 0 };
+	int count = 0;
+	for (uaecptr cur = seg; cur && count < 3; cur = get_long_debug(cur) << 2)
+		bases[count++] = cur + 4;
+	if (!count)
+		return {};
+	if (count == 1) bases[1] = bases[0];
+	if (count <= 2) bases[2] = bases[1];
+	char buf[64];
+	snprintf(buf, sizeof(buf), "Text=%x;Data=%x;Bss=%x", bases[0], bases[1], bases[2]);
+	return buf;
+}
+
 void GdbTarget::stopped(char*, size_t)
 {
 	range_active = false;
+	debug_set_process_trigger(nullptr);
 }
 
 void GdbTarget::detach()

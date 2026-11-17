@@ -137,6 +137,11 @@ void Session::command(const std::string& s)
 
 	if (s == "QStartNoAckMode") { reply("OK"); no_ack = true; return; }
 	if (s == "qAttached") { reply("1"); return; }
+	if (s == "qOffsets") {
+		auto off = target.offsets();
+		reply(off.empty() ? "E01" : off);
+		return;
+	}
 	if (s == "qC") { reply("QC1"); return; }
 	if (s == "qfThreadInfo") { reply("m1"); return; }
 	if (s == "qsThreadInfo") { reply("l"); return; }

@@ -26,6 +26,7 @@ public:
 	virtual bool write_memory(uint32_t, const std::vector<uint8_t>&) = 0;
 	virtual bool breakpoint(bool insert, unsigned type, uint32_t, uint32_t) = 0;
 	virtual std::string memory_map() { return {}; }
+	virtual std::string offsets() { return {}; }
 	virtual bool screenshot(const std::string&) { return false; }
 	virtual bool disassemble(uint32_t, unsigned, std::string&) { return false; }
 	virtual MonitorResult monitor(const std::string&, std::string&) { return MonitorResult::unsupported; }

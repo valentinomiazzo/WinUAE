@@ -8101,6 +8101,18 @@ void debug_exception(int nr)
 #ifdef GDBSERVER
 /* Execution control for the remote debugger (gdb_target.cpp, gdb_monitor.cpp) */
 
+void debug_set_process_trigger(const TCHAR* name)
+{
+	processptr = 0;
+	xfree(processname);
+	processname = NULL;
+	if (name && name[0]) {
+		processname = ua(name);
+		trace_mode = TRACE_CHECKONLY;
+		debugging = -1;
+	}
+}
+
 void debug_remote_interrupt(void)
 {
 	trace_mode = TRACE_IMMEDIATE;

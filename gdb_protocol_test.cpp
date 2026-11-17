@@ -286,6 +286,13 @@ int main()
 	output.clear(true); output.capture("detached");
 	require(output.snapshot() == "{\"enabled\":false,\"dropped\":0,\"records\":[]}", "guest output teardown");
 	require(json_string("a\n\"") == "\"a\\u000a\\\"\"", "JSON escaping");
+	require(send(s, "qOffsets") == frame("E01"), "qOffsets empty");
+	struct OffsetTarget : FakeTarget {
+		std::string offsets() override { return "Text=40000;Data=41000;Bss=42000"; }
+	} offset_target;
+	Session os(offset_target);
+	require(send(os, "QStartNoAckMode") == "+" + frame("OK"), "qOffsets noack");
+	require(send(os, "qOffsets") == frame("Text=40000;Data=41000;Bss=42000"), "qOffsets populated");
 	require(send(s, "D") == frame("OK") && s.finished(), "detach");
 	Session oversized(target);
 	std::string huge = "$" + std::string(Session::packet_size + 5, 'x');

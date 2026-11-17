@@ -566,6 +566,7 @@ struct uae_prefs {
 	int debugging_features;
 #ifdef GDBSERVER
 	int gdb_port;
+	TCHAR debugging_trigger[MAX_DPATH];
 #endif
 	TCHAR debugging_options[MAX_DPATH];
 	bool start_gui;

@@ -2086,6 +2086,7 @@ void cfgfile_save_options (struct zfile *f, struct uae_prefs *p, int type)
 	cfgfile_dwrite_str(f, _T("debugging_options"), p->debugging_options);
 #ifdef GDBSERVER
 	cfgfile_dwrite(f, _T("gdb_port"), _T("%d"), p->gdb_port);
+	cfgfile_dwrite_str(f, _T("debugging_trigger"), p->debugging_trigger);
 #endif
 
 	cfgfile_write_rom (f, &p->path_rom, p->romfile, _T("kickstart_rom_file"));
@@ -3907,6 +3908,8 @@ static int cfgfile_parse_host (struct uae_prefs *p, TCHAR *option, TCHAR *value)
 		}
 		return 1;
 	}
+	if (cfgfile_string(option, value, _T("debugging_trigger"), p->debugging_trigger, sizeof(p->debugging_trigger) / sizeof(TCHAR)))
+		return 1;
 #endif
 #endif
 
@@ -9045,6 +9048,7 @@ static void buildin_default_prefs (struct uae_prefs *p)
 	p->debug_mem = false;
 #ifdef GDBSERVER
 	p->gdb_port = 2345;
+	p->debugging_trigger[0] = 0;
 #endif
 
 	target_default_options (p, 1);

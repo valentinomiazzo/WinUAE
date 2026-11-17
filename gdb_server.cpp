@@ -5,6 +5,7 @@
 #include "gdb_server.h"
 #include "gdb_protocol.h"
 #include "gdb_transport.h"
+#include "debug.h"
 #include "uae.h"
 #include "xwin.h"
 #include "sounddep/sound.h"
@@ -47,6 +48,8 @@ void listen_local(int port)
 		return;
 	}
 	write_log(_T("WinUAE GDB: listening on 127.0.0.1:%d\n"), port);
+	if (currprefs.debugging_trigger[0])
+		debug_set_process_trigger(currprefs.debugging_trigger);
 }
 }
 
