@@ -8,11 +8,12 @@ on:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
   pull_request:
     branches:
       - master
+
+permissions:
+  contents: write
 
 env:
   SOLUTION_FILE_PATH: od-win32\\winuae_msvc15
