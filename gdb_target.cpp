@@ -269,7 +269,7 @@ std::string GdbTarget::offsets()
 	if (count == 1) bases[1] = bases[0];
 	if (count <= 2) bases[2] = bases[1];
 	char buf[64];
-	snprintf(buf, sizeof(buf), "Text=%x;Data=%x;Bss=%x", bases[0], bases[1], bases[2]);
+	snprintf(buf, sizeof(buf), "%x;%x;%x", bases[0], bases[1], bases[2]);
 	return buf;
 }
 
